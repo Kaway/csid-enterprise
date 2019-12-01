@@ -1,6 +1,7 @@
 package fr.univparis8.iut.csid.handlers;
 
 import fr.univparis8.iut.csid.exception.IdMismatchException;
+import fr.univparis8.iut.csid.exception.ObjectNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({ ConstraintViolationException.class })
-    public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
+    public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
         List<String> errors = new ArrayList<>();
         for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
             errors.add(violation.getRootBeanClass().getName() + " " +
@@ -54,25 +55,22 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({ IllegalArgumentException.class })
-    public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex, WebRequest request) {
-        List<String> errors = Collections.singletonList(ex.getLocalizedMessage());
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
+    public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), ex.getLocalizedMessage());
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
     @ExceptionHandler({ IdMismatchException.class })
-    public ResponseEntity<Object> handleIdMismatchException(IdMismatchException ex, WebRequest request) {
+    public ResponseEntity<Object> handleIdMismatchException(IdMismatchException ex) {
         List<String> errors = Collections.singletonList(ex.getLocalizedMessage());
         ApiError apiError = new ApiError(HttpStatus.CONFLICT, ex.getLocalizedMessage(), errors);
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
-        String id = request.getParameter("id");
-        List<String> errors = Collections.singletonList("Object with id " + id + " does not exist");
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), errors);
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public ResponseEntity<Object> handleEntityNotFoundException(ObjectNotFoundException ex) {
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), Collections.emptyList());
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
