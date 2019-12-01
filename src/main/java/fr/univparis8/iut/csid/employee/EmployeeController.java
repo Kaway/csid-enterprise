@@ -62,6 +62,19 @@ public class EmployeeController {
         return EmployeeMapper.toEmployeeDto(updatedEmployee);
     }
 
+    @PatchMapping("{id}")
+    public EmployeeDto partialUpdateEmployee(@PathVariable Long id, @RequestBody EmployeeDto employeeDto) {
+        if(employeeDto.getId() == null) {
+            throw new IllegalArgumentException("Employee id should be populated for HTTP PUT method: you cannot predict its id");
+        }
+        if(!id.equals(employeeDto.getId())) {
+            throw new IdMismatchException("Path id and payload id do not match");
+        }
+
+        Employee updatedEmployee = employeeService.partialUpdate(EmployeeMapper.toEmployee(employeeDto));
+        return EmployeeMapper.toEmployeeDto(updatedEmployee);
+    }
+
     @DeleteMapping("{id}")
     public void deleteEmployee(@PathVariable Long id) {
         employeeService.delete(id);

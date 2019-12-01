@@ -40,6 +40,19 @@ public class EmployeeService {
         return EmployeeMapper.toEmployee(savedEmployee);
     }
 
+    public Employee partialUpdate(Employee employee) {
+        if(!employeeRepository.existsById(employee.getId())) {
+            throw new ObjectNotFoundException("Employee with id " + employee.getId() + " does not exist");
+        }
+
+        Employee currentEmployee = EmployeeMapper.toEmployee(employeeRepository.getOne(employee.getId()));
+        Employee mergedEmployee = currentEmployee.mergeWith(employee);
+
+        EmployeEntity newEmployee = employeeRepository.save(EmployeeMapper.toEmployee(mergedEmployee));
+
+        return EmployeeMapper.toEmployee(newEmployee);
+    }
+
     public void delete(Long id) {
         if(employeeRepository.existsById(id)) {
             employeeRepository.deleteById(id);
