@@ -5,9 +5,7 @@ import java.util.Objects;
 public class Employee {
 
     private final Long id;
-
     private final String firstName;
-
     private final String lastName;
 
     public Employee(Long id, String firstName, String lastName) {

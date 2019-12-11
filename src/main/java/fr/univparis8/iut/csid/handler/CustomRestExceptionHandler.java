@@ -1,4 +1,4 @@
-package fr.univparis8.iut.csid.handlers;
+package fr.univparis8.iut.csid.handler;
 
 import fr.univparis8.iut.csid.exception.IdMismatchException;
 import fr.univparis8.iut.csid.exception.ObjectNotFoundException;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
