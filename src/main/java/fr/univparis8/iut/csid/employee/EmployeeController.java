@@ -1,5 +1,6 @@
 package fr.univparis8.iut.csid.employee;
 
+import fr.univparis8.iut.csid.annotation.IdAndBodyMatcher;
 import fr.univparis8.iut.csid.exception.IdMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -49,13 +50,15 @@ public class EmployeeController {
         return ResponseEntity.created(uri).body(EmployeeMapper.toEmployeeDto(newEmployee));
     }
 
+    @IdAndBodyMatcher
     @PutMapping("{id}")
     public EmployeeDto updateEmployee(@PathVariable Long id, @RequestBody EmployeeDto employeeDto) {
         if(employeeDto.getId() == null) {
             throw new IllegalArgumentException("Employee id should be populated for HTTP PUT method: you cannot predict its id");
         }
+
         if(!id.equals(employeeDto.getId())) {
-            throw new IdMismatchException("Path id and payload id do not match");
+            throw new IdMismatchException("Path id and body id do not match");
         }
 
         Employee updatedEmployee = employeeService.update(EmployeeMapper.toEmployee(employeeDto));
@@ -68,7 +71,7 @@ public class EmployeeController {
             throw new IllegalArgumentException("Employee id should be populated for HTTP PUT method: you cannot predict its id");
         }
         if(!id.equals(employeeDto.getId())) {
-            throw new IdMismatchException("Path id and payload id do not match");
+            throw new IdMismatchException("Path id and body id do not match");
         }
 
         Employee updatedEmployee = employeeService.partialUpdate(EmployeeMapper.toEmployee(employeeDto));
